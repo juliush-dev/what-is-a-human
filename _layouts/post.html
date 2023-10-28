@@ -1,0 +1,19 @@
+---
+layout: default
+---
+<section class="backdrop-blur-xl relative text-white w-full h-full overflow-hidden overflow-y-auto pt-20 post"
+         style="background-image: linear-gradient(30.8deg,rgba(0, 0, 0, 1) 30%,transparent 100%),radial-gradient(circle at 70% 40%, transparent, rgba(0, 0, 0, 1) 90%),url('{{page.image}}');">
+    <div class="md:px-20 min-h-screen" id="post">
+        {% include post-header.html %}
+        {% include prose-md.html %}
+        <a href="#posts"
+           class="px-4 md:px-0 underline underline-offset-4 meta flex flex-nowrap items-center gap-1 text-xl my-8">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                 stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 13.5L12 21m0 0l-7.5-7.5M12 21V3" />
+            </svg>
+            In the same category
+        </a>
+    </div>
+    {% include catalogue.html %}
+</section>

@@ -1,0 +1,15 @@
+<div class="meta md:mb-4 {% if post == nil %} px-6 md:px-0 md:mb-2 {% endif %}">
+    <h1
+        class="text-4xl mb-4 {% if post and post.titlelg %} text-3xl {% endif %} md:text-7xl mb-2 {% if(post == nil) %} lg:w-1/2 {% endif %}">
+        {{ post.title | default: page.title }}
+    </h1>
+    {% if post.date or page.date and post or page %}
+    <p class="mb-4 md:mb-0 capitalize md:text-md bg-yellow-500 text-slate-950 rounded-full px-4 inline-block">
+        {% if post and post.categories != empty and post.date %}
+        {{ post.categories.last }} - {{ post.date | date_to_string }}
+        {% else if page and page.categories != empty and page.date %}
+        {{ page.categories.last }} - {{ page.date | date_to_string }}
+        {% endif %}
+    </p>
+    {% endif %}
+</div>

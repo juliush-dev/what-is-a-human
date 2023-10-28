@@ -1,0 +1,16 @@
+---
+layout: default
+---
+<div class="h-full overflow-y-auto w-screen pt-20 md:p-20 flex justify-center">
+    <ul class="relative text-white columns-1 lg:columns-2 space-y-10 gap-10 xl:columns-3 w-fit h-fit">
+        {% for project in site.projects %}
+        <li class="break-inside-avoid rounded-md relative h-fit w-full p-6 border transition-all duration-500"
+            style="background-image: linear-gradient(30.8deg,rgba(0, 0, 0, 0.5) 30%,transparent 100%),radial-gradient(circle at 70% 40%, transparent, rgba(0, 0, 0, 1) 90%);">
+            <section>
+                <h1 class="text-3xl mb-4 meta">{{ project.name }}</h1>
+                {% include prose-md.html %}
+            </section>
+        </li>
+        {% endfor %}
+    </ul>
+</div>

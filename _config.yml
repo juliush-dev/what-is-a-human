@@ -1,0 +1,29 @@
+url: "https://www.what-is-a-human.com" # the base hostname & protocol for your site, e.g. http://example.com
+baseurl: "" # the subpath of your site, e.g. /blog
+title: "What is a human" # the name of your site, e.g. ACME Corp.
+plugins:
+  - jekyll-postcss
+  - jekyll-sitemap
+
+css:
+  sourcemap: never
+sass:
+  sourcemap: never
+postcss:
+  cache: false
+collections:
+  groups:
+    output: true
+  projects:
+
+defaults:
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
+      author: "Julius"
+  - scope:
+      path: ""
+    values:
+      layout: "default"
