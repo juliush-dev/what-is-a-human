@@ -6,4 +6,4 @@ image: https://images.unsplash.com/photo-1526948128573-703ee1aeb6fa?auto=format&
 
 # Julius Herbert<br>Taguebou
 
-Trainee @ Ruhr university of Bochum, from Cameroun, speak Yemba# French# German+ English+ HTML+ CSS+ JS+ PHP+ JAVA+ WordPress+ Git+, author of [projects](/projects), contactable @ <Juliush.dev@gmail.com>
+Trainee @ Ruhr university of Bochum, from Cameroun, speak Yemba# French# German+ English+ HTML+ CSS+ JS+ PHP+ JAVA+ WordPress+ Git+, author of [projects]({{site.baseurl}}/projects), contactable @ <Juliush.dev@gmail.com>
