@@ -1,1 +1,1 @@
-Sitemap: https://www.what-is-a-human.com/sitemap.xml
+Sitemap: /what-is-a-human/sitemap.xml
