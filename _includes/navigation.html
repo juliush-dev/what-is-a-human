@@ -3,7 +3,7 @@
     <ul class="flex gap-6 text-md md:text-base w-full md:justify-end overflow-y-hidden overflow-x-auto">
         {% for item in site.data.navigation %}
         <li>
-            <a href="{{ item.url }}"
+            <a href="{{site.baseurl}}{{ item.url }}"
                class="{% if forloop.first %} ml-6 md:ml-0  {% endif %} {% if page.url== item.url %} rounded-full bg-white text-slate-950 font-semibold px-2 {% endif %}">
                 {{ item.label }}
             </a>
@@ -14,7 +14,7 @@
             &rarr;</span>
         {% for group in site.groups %}
         <li>
-            <a href="{{ group.url }}"
+            <a href="{{site.baseurl}}{{ group.url }}"
                class="{% if forloop.last %} mr-6 md:mr-0  {% endif %} {% if page.url==group.url %} rounded-full bg-white text-slate-950 font-semibold px-2 {% endif %}">
                 {{ group.cat | capitalize }}
             </a>
