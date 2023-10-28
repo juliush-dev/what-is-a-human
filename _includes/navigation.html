@@ -10,13 +10,12 @@
         </li>
         {% endfor %}
         {% for group in site.groups %}
-        <li class="flex flex-nowrap gap-4 items-center">
+        <li class="flex flex-nowrap items-center">
             {% if forloop.first %}
-            <span class="flex items-center pl-6 border-l font-mono whitespace-nowrap"><span
-                      class="bg-zinc-700 px-1">Blog
-                    content
-                    categories</span>
-                <span class="text-xl -mt-0.5">&rarr;</span></span>
+            <span class="flex items-center pl-6 pr-4 border-l font-mono whitespace-nowrap">
+                <span class="bg-zinc-700 px-1">Blog content categories</span>
+                <span class="text-xl -mt-0.1">&rarr;</span>
+            </span>
             {% endif %}
             <a href="{{site.baseurl}}{{ group.url }}"
                class="{% if forloop.last %} mr-6 md:mr-0  {% endif %} {% if page.url==group.url %} rounded-full bg-white text-slate-950 font-semibold px-2 {% endif %}">
