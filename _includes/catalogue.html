@@ -44,7 +44,7 @@
     <ul id="posts"
         class="border-t-2 border-slate-200/30 w-full gap-3 z-10 py-10 flex flex-nowrap items-center overflow-x-auto pl-6 md:pl-20 pr-[15vw] md:pr-[75vw]">
         {% for post in site.categories[target_category] %}
-        <a href="{% if page.url == post.url %} #post {% else %} {{ post.url }} {% endif %}"
+        <a href="{% if page.url == post.url %} #post {% else %} {{site.baseurl}}{{ post.url }} {% endif %}"
            @focus="presentationPaused = true; postIndex = {{forloop.index  }};">
             <li @mouseover="presentationPaused = true; postIndex = {{forloop.index  }}; contentRevealed = false"
                 @focusout="presentationPaused = false;" @mouseleave="presentationPaused = false;"
@@ -84,7 +84,7 @@
                                 class="hidden xl:block text-white underline underline-offset-4 font-medium text-xl text-left">
                             Tell me more please...
                         </button>
-                        <a href="{{post.url}}"
+                        <a href="{{site.baseurl}}{{post.url}}"
                            class="xl:hidden text-white underline underline-offset-4 font-medium text-xl text-left">
                             Tell me more please...
                         </a>
