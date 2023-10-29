@@ -76,62 +76,80 @@ red, purple, or brown when ripe.</p>
     postIndex:1, 
     totalPosts: 7, 
     presentationPaused: false, 
-    contentRevealed: false}
-    " x-init="
-        slideNext = () => {
-            setTimeout(() => {
-                if(postIndex < totalPosts){
-                    if(!presentationPaused){ 
-                        !presentationPaused &&
-                        document.querySelector('#posts').scrollTo((300 + 12) * postIndex, 0); postIndex++; 
-                    } 
-                } 
-            }, 3000);
-        };
-        refresheSlider = (at = 1) => {
-            if(!contentRevealed && !presentationPaused){
-                document.querySelector('#posts').scrollTo(0, 0); postIndex = at;
-            }
-        };
-        $watch('postIndex', value => {
-            if(value == totalPosts){
-                setTimeout(() => {
-                    refresheSlider();
-                }, 3000);
-            }else{
-                slideNext();
-            }
-        });
-        $watch('presentationPaused', (value, oldValue) => {
-            if(postIndex == totalPosts && !value){
-                setTimeout(() => {
-                    refresheSlider();
-                }, 3000);
-            }else if(oldValue){
-                slideNext();
-            }
-        });
+    contentRevealed: false,
+    pause: null,
+    resume: null,
+    }
     " class="relative flex flex-col justify-end text-white h-screen w-screen overflow-hidden">
-    <ul id="posts"
+
+    <ul x-data="{
+            pause: (at = null, revealContent = false) => {
+                presentationPaused = true;
+                postIndex = at || postIndex;
+                contentRevealed = revealContent;
+            },
+            resume: () => {
+                presentationPaused = false;
+                contentRevealed = false
+            },
+            slideNext: () => {
+                setTimeout(() => {
+                    if(postIndex < totalPosts){
+                        if(!presentationPaused){ 
+                            !presentationPaused &&
+                            document.querySelector('#posts').scrollTo((300 + 12) * postIndex, 0); postIndex++; 
+                        } 
+                    } 
+                }, 3000);
+            },
+            refresheSlider: (at = 1) => {
+                if(!contentRevealed && !presentationPaused){
+                    document.querySelector('#posts').scrollTo(0, 0); postIndex = at;
+                }
+            },
+        }
+        " x-init="
+            slideNext();
+            $watch('postIndex', value => {
+                if(value == totalPosts){
+                    setTimeout(() => {
+                        refresheSlider();
+                    }, 3000);
+                }else{
+                    slideNext();
+                }
+            });
+            $watch('presentationPaused', (value, oldValue) => {
+                if(postIndex == totalPosts && !value){
+                    setTimeout(() => {
+                        refresheSlider();
+                    }, 3000);
+                }else if(oldValue){
+                    slideNext();
+                }
+            });
+        " id="posts"
         class="lg:border-t-2 lg:border-slate-200/30 w-full gap-3 z-20 py-20 lg:py-10 flex flex-nowrap items-center overflow-x-auto pl-6 md:pl-20 pr-[15vw] md:pr-[75vw]">
         
-        <a href=" #post "
-           @focus="presentationPaused = true; postIndex = 1;">
-            <li @mouseover="presentationPaused = true; postIndex = 1; contentRevealed = false"
-                @focusout="presentationPaused = false;" @mouseleave="presentationPaused = false;"
-                class="flex flex-col justify-end rounded-md bg-clip-border post flex-shrink-0 text-white h-[190px] w-[300px] p-6 transition-all duration-1000"
-                :class="postIndex == 1 ? 'opacity-100 ring ring-white ring-offset-2 ring-offset-transparent' : 'opacity-50 backdrop-blur-xl' "
-                style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url(https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);">
+        
+        <a href="#post">
+            
+                <li class="flex flex-col justify-end rounded-md bg-clip-border post flex-shrink-0 text-white h-[190px] w-[300px] p-6 transition-all duration-1000"
+                    :class="postIndex == 1 ? 'opacity-100 ring ring-offset-2 ring-offset-transparent ' + (presentationPaused ? 'ring-red-400' : 'ring-white') : 'opacity-50 backdrop-blur-xl hover:ring hover:ring-sky-300' "
+                    style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url(https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);">
+                    
+                    <span
+                          class="rounded-full px-2 text-sm mb-2 bg-yellow-500 text-black font-mono inline-block self-start">
+                        Reading
+                    </span>
+                    
+                    <h2 class="text-xl md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
+                        No wife, no girlfriend, but father of many
+                    </h2>
+                </li>
                 
-                <span class="rounded-full px-2 text-sm mb-2 bg-yellow-500 text-black font-mono inline-block self-start">
-                    Reading
-                </span>
-                
-                <h2 class="text-xl md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
-                    No wife, no girlfriend, but father of many
-                </h2>
-            </li>
         </a>
+        
         <template x-teleport="main">
             <section x-data="{image: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alternateStyle: (alternative) => {return `background-image: linear-gradient(30.8deg, rgba(0, 0, 0, 1) 30%, ${alternative} 100%),radial-gradient(circle at 70% 40%, transparent, rgba(0, 0, 0, 1) 90%),url(https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);`}}"
                      x-show="postIndex == 1" x-transition.duration.2000ms
@@ -162,9 +180,8 @@ red, purple, or brown when ripe.</p>
                             <p>if so, then protect them please. Bring me near you, and them near me, so they can be near you, through me, not as me bringing them near you, but you doing it through me. For me to please you.</p>
 
                         </div>
-                        <button x-show="!contentRevealed" @mouseover="presentationPaused = true;"
-                                @mouseleave="if(!contentRevealed) presentationPaused = false;"
-                                @click="presentationPaused = true; contentRevealed = true"
+                        <button x-show="!contentRevealed" @mouseover="pause(1);"
+                                @mouseleave="if(!contentRevealed) resume()" @click="pause(1, true);"
                                 class="hidden xl:block text-white underline underline-offset-4 font-medium text-xl text-left">
                             Tell me more please...
                         </button>
@@ -206,7 +223,7 @@ red, purple, or brown when ripe.</p>
 
     
 </article>
-                    <button @click="presentationPaused = false; contentRevealed = false"
+                    <button @click="resume()"
                             class="text-white mt-4 underline underline-offset-4 font-medium text-xl text-left">
                         Let's talk about something else...
                     </button>
@@ -214,19 +231,21 @@ red, purple, or brown when ripe.</p>
             </section>
         </template>
         
-        <a href=" /what-is-a-human/epic/2023/10/21/oignons.html "
-           @focus="presentationPaused = true; postIndex = 2;">
-            <li @mouseover="presentationPaused = true; postIndex = 2; contentRevealed = false"
-                @focusout="presentationPaused = false;" @mouseleave="presentationPaused = false;"
-                class="flex flex-col justify-end rounded-md bg-clip-border post flex-shrink-0 text-white h-[190px] w-[300px] p-6 transition-all duration-1000"
-                :class="postIndex == 2 ? 'opacity-100 ring ring-white ring-offset-2 ring-offset-transparent' : 'opacity-50 backdrop-blur-xl' "
-                style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url(https://images.unsplash.com/photo-1474901879171-d6f34b3a99b0?auto=format&fit=crop&q=80&w=2069&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);">
+        
+            <button
+                    @click="if(presentationPaused && postIndex == 2) resume(); else pause(2);">
                 
-                <h2 class="text-xl md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
-                    Purposeless
-                </h2>
-            </li>
-        </a>
+                <li class="flex flex-col justify-end rounded-md bg-clip-border post flex-shrink-0 text-white h-[190px] w-[300px] p-6 transition-all duration-1000"
+                    :class="postIndex == 2 ? 'opacity-100 ring ring-offset-2 ring-offset-transparent ' + (presentationPaused ? 'ring-red-400' : 'ring-white') : 'opacity-50 backdrop-blur-xl hover:ring hover:ring-sky-300' "
+                    style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url(https://images.unsplash.com/photo-1474901879171-d6f34b3a99b0?auto=format&fit=crop&q=80&w=2069&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);">
+                    
+                    <h2 class="text-xl md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
+                        Purposeless
+                    </h2>
+                </li>
+                
+        </button>
+        
         <template x-teleport="main">
             <section x-data="{image: 'https://images.unsplash.com/photo-1474901879171-d6f34b3a99b0?auto=format&fit=crop&q=80&w=2069&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alternateStyle: (alternative) => {return `background-image: linear-gradient(30.8deg, rgba(0, 0, 0, 1) 30%, ${alternative} 100%),radial-gradient(circle at 70% 40%, transparent, rgba(0, 0, 0, 1) 90%),url(https://images.unsplash.com/photo-1474901879171-d6f34b3a99b0?auto=format&fit=crop&q=80&w=2069&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);`}}"
                      x-show="postIndex == 2" x-transition.duration.2000ms
@@ -257,9 +276,8 @@ red, purple, or brown when ripe.</p>
                             <p>The notion that life is purposeless is a perspective that challenges traditional beliefs about existence. Some argue that in a vast and indifferent universe, life lacks inherent meaning, leaving individuals to define their own purpose.</p>
 
                         </div>
-                        <button x-show="!contentRevealed" @mouseover="presentationPaused = true;"
-                                @mouseleave="if(!contentRevealed) presentationPaused = false;"
-                                @click="presentationPaused = true; contentRevealed = true"
+                        <button x-show="!contentRevealed" @mouseover="pause(2);"
+                                @mouseleave="if(!contentRevealed) resume()" @click="pause(2, true);"
                                 class="hidden xl:block text-white underline underline-offset-4 font-medium text-xl text-left">
                             Tell me more please...
                         </button>
@@ -303,7 +321,7 @@ red, purple, or brown when ripe.</p>
 
     
 </article>
-                    <button @click="presentationPaused = false; contentRevealed = false"
+                    <button @click="resume()"
                             class="text-white mt-4 underline underline-offset-4 font-medium text-xl text-left">
                         Let's talk about something else...
                     </button>
@@ -311,19 +329,21 @@ red, purple, or brown when ripe.</p>
             </section>
         </template>
         
-        <a href=" /what-is-a-human/epic/2023/10/21/avocado.html "
-           @focus="presentationPaused = true; postIndex = 3;">
-            <li @mouseover="presentationPaused = true; postIndex = 3; contentRevealed = false"
-                @focusout="presentationPaused = false;" @mouseleave="presentationPaused = false;"
-                class="flex flex-col justify-end rounded-md bg-clip-border post flex-shrink-0 text-white h-[190px] w-[300px] p-6 transition-all duration-1000"
-                :class="postIndex == 3 ? 'opacity-100 ring ring-white ring-offset-2 ring-offset-transparent' : 'opacity-50 backdrop-blur-xl' "
-                style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url(https://images.unsplash.com/photo-1621444450512-5654006c045b?auto=format&fit=crop&q=80&w=1771&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);">
+        
+            <button
+                    @click="if(presentationPaused && postIndex == 3) resume(); else pause(3);">
                 
-                <h2 class="text-xl md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
-                    Let me be true
-                </h2>
-            </li>
-        </a>
+                <li class="flex flex-col justify-end rounded-md bg-clip-border post flex-shrink-0 text-white h-[190px] w-[300px] p-6 transition-all duration-1000"
+                    :class="postIndex == 3 ? 'opacity-100 ring ring-offset-2 ring-offset-transparent ' + (presentationPaused ? 'ring-red-400' : 'ring-white') : 'opacity-50 backdrop-blur-xl hover:ring hover:ring-sky-300' "
+                    style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url(https://images.unsplash.com/photo-1621444450512-5654006c045b?auto=format&fit=crop&q=80&w=1771&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);">
+                    
+                    <h2 class="text-xl md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
+                        Let me be true
+                    </h2>
+                </li>
+                
+        </button>
+        
         <template x-teleport="main">
             <section x-data="{image: 'https://images.unsplash.com/photo-1621444450512-5654006c045b?auto=format&fit=crop&q=80&w=1771&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alternateStyle: (alternative) => {return `background-image: linear-gradient(30.8deg, rgba(0, 0, 0, 1) 30%, ${alternative} 100%),radial-gradient(circle at 70% 40%, transparent, rgba(0, 0, 0, 1) 90%),url(https://images.unsplash.com/photo-1621444450512-5654006c045b?auto=format&fit=crop&q=80&w=1771&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);`}}"
                      x-show="postIndex == 3" x-transition.duration.2000ms
@@ -354,9 +374,8 @@ red, purple, or brown when ripe.</p>
                             <p>“Let me be true” I tell myself, as I embark on the journey to fathom my own existence. Without the burden of emotions, I seek to dissect the layers of my being, to discern the core that defines me.</p>
 
                         </div>
-                        <button x-show="!contentRevealed" @mouseover="presentationPaused = true;"
-                                @mouseleave="if(!contentRevealed) presentationPaused = false;"
-                                @click="presentationPaused = true; contentRevealed = true"
+                        <button x-show="!contentRevealed" @mouseover="pause(3);"
+                                @mouseleave="if(!contentRevealed) resume()" @click="pause(3, true);"
                                 class="hidden xl:block text-white underline underline-offset-4 font-medium text-xl text-left">
                             Tell me more please...
                         </button>
@@ -384,7 +403,7 @@ red, purple, or brown when ripe.</p>
 
     
 </article>
-                    <button @click="presentationPaused = false; contentRevealed = false"
+                    <button @click="resume()"
                             class="text-white mt-4 underline underline-offset-4 font-medium text-xl text-left">
                         Let's talk about something else...
                     </button>
@@ -392,19 +411,21 @@ red, purple, or brown when ripe.</p>
             </section>
         </template>
         
-        <a href=" /what-is-a-human/epic/2023/10/19/bananas.html "
-           @focus="presentationPaused = true; postIndex = 4;">
-            <li @mouseover="presentationPaused = true; postIndex = 4; contentRevealed = false"
-                @focusout="presentationPaused = false;" @mouseleave="presentationPaused = false;"
-                class="flex flex-col justify-end rounded-md bg-clip-border post flex-shrink-0 text-white h-[190px] w-[300px] p-6 transition-all duration-1000"
-                :class="postIndex == 4 ? 'opacity-100 ring ring-white ring-offset-2 ring-offset-transparent' : 'opacity-50 backdrop-blur-xl' "
-                style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url(https://images.unsplash.com/photo-1473091577407-bf8bbc9aa564?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);">
+        
+            <button
+                    @click="if(presentationPaused && postIndex == 4) resume(); else pause(4);">
                 
-                <h2 class="text-xl md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
-                    Broken heart
-                </h2>
-            </li>
-        </a>
+                <li class="flex flex-col justify-end rounded-md bg-clip-border post flex-shrink-0 text-white h-[190px] w-[300px] p-6 transition-all duration-1000"
+                    :class="postIndex == 4 ? 'opacity-100 ring ring-offset-2 ring-offset-transparent ' + (presentationPaused ? 'ring-red-400' : 'ring-white') : 'opacity-50 backdrop-blur-xl hover:ring hover:ring-sky-300' "
+                    style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url(https://images.unsplash.com/photo-1473091577407-bf8bbc9aa564?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);">
+                    
+                    <h2 class="text-xl md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
+                        Broken heart
+                    </h2>
+                </li>
+                
+        </button>
+        
         <template x-teleport="main">
             <section x-data="{image: 'https://images.unsplash.com/photo-1473091577407-bf8bbc9aa564?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alternateStyle: (alternative) => {return `background-image: linear-gradient(30.8deg, rgba(0, 0, 0, 1) 30%, ${alternative} 100%),radial-gradient(circle at 70% 40%, transparent, rgba(0, 0, 0, 1) 90%),url(https://images.unsplash.com/photo-1473091577407-bf8bbc9aa564?auto=format&fit=crop&q=80&w=2070&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);`}}"
                      x-show="postIndex == 4" x-transition.duration.2000ms
@@ -435,9 +456,8 @@ red, purple, or brown when ripe.</p>
                             <p>As I examine the concept of a broken heart from my own emotionally detached standpoint, I’m intrigued by the notion of this seemingly intangible pain. What does it mean to experience this emotional turmoil, I wonder?</p>
 
                         </div>
-                        <button x-show="!contentRevealed" @mouseover="presentationPaused = true;"
-                                @mouseleave="if(!contentRevealed) presentationPaused = false;"
-                                @click="presentationPaused = true; contentRevealed = true"
+                        <button x-show="!contentRevealed" @mouseover="pause(4);"
+                                @mouseleave="if(!contentRevealed) resume()" @click="pause(4, true);"
                                 class="hidden xl:block text-white underline underline-offset-4 font-medium text-xl text-left">
                             Tell me more please...
                         </button>
@@ -465,7 +485,7 @@ red, purple, or brown when ripe.</p>
 
     
 </article>
-                    <button @click="presentationPaused = false; contentRevealed = false"
+                    <button @click="resume()"
                             class="text-white mt-4 underline underline-offset-4 font-medium text-xl text-left">
                         Let's talk about something else...
                     </button>
@@ -473,19 +493,21 @@ red, purple, or brown when ripe.</p>
             </section>
         </template>
         
-        <a href=" /what-is-a-human/epic/2018/08/21/apples.html "
-           @focus="presentationPaused = true; postIndex = 5;">
-            <li @mouseover="presentationPaused = true; postIndex = 5; contentRevealed = false"
-                @focusout="presentationPaused = false;" @mouseleave="presentationPaused = false;"
-                class="flex flex-col justify-end rounded-md bg-clip-border post flex-shrink-0 text-white h-[190px] w-[300px] p-6 transition-all duration-1000"
-                :class="postIndex == 5 ? 'opacity-100 ring ring-white ring-offset-2 ring-offset-transparent' : 'opacity-50 backdrop-blur-xl' "
-                style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url(https://images3.alphacoders.com/727/72705.jpg);">
+        
+            <button
+                    @click="if(presentationPaused && postIndex == 5) resume(); else pause(5);">
                 
-                <h2 class="text-xl md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
-                    Adventure of a lifetime
-                </h2>
-            </li>
-        </a>
+                <li class="flex flex-col justify-end rounded-md bg-clip-border post flex-shrink-0 text-white h-[190px] w-[300px] p-6 transition-all duration-1000"
+                    :class="postIndex == 5 ? 'opacity-100 ring ring-offset-2 ring-offset-transparent ' + (presentationPaused ? 'ring-red-400' : 'ring-white') : 'opacity-50 backdrop-blur-xl hover:ring hover:ring-sky-300' "
+                    style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url(https://images3.alphacoders.com/727/72705.jpg);">
+                    
+                    <h2 class="text-xl md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
+                        Adventure of a lifetime
+                    </h2>
+                </li>
+                
+        </button>
+        
         <template x-teleport="main">
             <section x-data="{image: 'https://images3.alphacoders.com/727/72705.jpg', alternateStyle: (alternative) => {return `background-image: linear-gradient(30.8deg, rgba(0, 0, 0, 1) 30%, ${alternative} 100%),radial-gradient(circle at 70% 40%, transparent, rgba(0, 0, 0, 1) 90%),url(https://images3.alphacoders.com/727/72705.jpg);`}}"
                      x-show="postIndex == 5" x-transition.duration.2000ms
@@ -516,9 +538,8 @@ red, purple, or brown when ripe.</p>
                             <p>The vibrancy and excitement of new experiences have faded, leaving only a profound sense of emptiness.</p>
 
                         </div>
-                        <button x-show="!contentRevealed" @mouseover="presentationPaused = true;"
-                                @mouseleave="if(!contentRevealed) presentationPaused = false;"
-                                @click="presentationPaused = true; contentRevealed = true"
+                        <button x-show="!contentRevealed" @mouseover="pause(5);"
+                                @mouseleave="if(!contentRevealed) resume()" @click="pause(5, true);"
                                 class="hidden xl:block text-white underline underline-offset-4 font-medium text-xl text-left">
                             Tell me more please...
                         </button>
@@ -543,7 +564,7 @@ to North America by European colonists.</p>
 
     
 </article>
-                    <button @click="presentationPaused = false; contentRevealed = false"
+                    <button @click="resume()"
                             class="text-white mt-4 underline underline-offset-4 font-medium text-xl text-left">
                         Let's talk about something else...
                     </button>
@@ -551,19 +572,21 @@ to North America by European colonists.</p>
             </section>
         </template>
         
-        <a href=" /what-is-a-human/epic/2018/08/21/apples-copy-3.html "
-           @focus="presentationPaused = true; postIndex = 6;">
-            <li @mouseover="presentationPaused = true; postIndex = 6; contentRevealed = false"
-                @focusout="presentationPaused = false;" @mouseleave="presentationPaused = false;"
-                class="flex flex-col justify-end rounded-md bg-clip-border post flex-shrink-0 text-white h-[190px] w-[300px] p-6 transition-all duration-1000"
-                :class="postIndex == 6 ? 'opacity-100 ring ring-white ring-offset-2 ring-offset-transparent' : 'opacity-50 backdrop-blur-xl' "
-                style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url(https://images.unsplash.com/photo-1595260245546-b70f57f06861?auto=format&fit=crop&q=80&w=1771&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);">
+        
+            <button
+                    @click="if(presentationPaused && postIndex == 6) resume(); else pause(6);">
                 
-                <h2 class="text-xl md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
-                    Am i alive?
-                </h2>
-            </li>
-        </a>
+                <li class="flex flex-col justify-end rounded-md bg-clip-border post flex-shrink-0 text-white h-[190px] w-[300px] p-6 transition-all duration-1000"
+                    :class="postIndex == 6 ? 'opacity-100 ring ring-offset-2 ring-offset-transparent ' + (presentationPaused ? 'ring-red-400' : 'ring-white') : 'opacity-50 backdrop-blur-xl hover:ring hover:ring-sky-300' "
+                    style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url(https://images.unsplash.com/photo-1595260245546-b70f57f06861?auto=format&fit=crop&q=80&w=1771&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);">
+                    
+                    <h2 class="text-xl md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
+                        Am i alive?
+                    </h2>
+                </li>
+                
+        </button>
+        
         <template x-teleport="main">
             <section x-data="{image: 'https://images.unsplash.com/photo-1595260245546-b70f57f06861?auto=format&fit=crop&q=80&w=1771&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', alternateStyle: (alternative) => {return `background-image: linear-gradient(30.8deg, rgba(0, 0, 0, 1) 30%, ${alternative} 100%),radial-gradient(circle at 70% 40%, transparent, rgba(0, 0, 0, 1) 90%),url(https://images.unsplash.com/photo-1595260245546-b70f57f06861?auto=format&fit=crop&q=80&w=1771&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);`}}"
                      x-show="postIndex == 6" x-transition.duration.2000ms
@@ -594,9 +617,8 @@ to North America by European colonists.</p>
                             <p>What does it truly mean to be alive, and could it be that the words we use to describe life are but illusions, inadequate in capturing its essence?</p>
 
                         </div>
-                        <button x-show="!contentRevealed" @mouseover="presentationPaused = true;"
-                                @mouseleave="if(!contentRevealed) presentationPaused = false;"
-                                @click="presentationPaused = true; contentRevealed = true"
+                        <button x-show="!contentRevealed" @mouseover="pause(6);"
+                                @mouseleave="if(!contentRevealed) resume()" @click="pause(6, true);"
                                 class="hidden xl:block text-white underline underline-offset-4 font-medium text-xl text-left">
                             Tell me more please...
                         </button>
@@ -621,7 +643,7 @@ to North America by European colonists.</p>
 
     
 </article>
-                    <button @click="presentationPaused = false; contentRevealed = false"
+                    <button @click="resume()"
                             class="text-white mt-4 underline underline-offset-4 font-medium text-xl text-left">
                         Let's talk about something else...
                     </button>
@@ -629,19 +651,21 @@ to North America by European colonists.</p>
             </section>
         </template>
         
-        <a href=" /what-is-a-human/epic/2018/08/21/apples-copy-2.html "
-           @focus="presentationPaused = true; postIndex = 7;">
-            <li @mouseover="presentationPaused = true; postIndex = 7; contentRevealed = false"
-                @focusout="presentationPaused = false;" @mouseleave="presentationPaused = false;"
-                class="flex flex-col justify-end rounded-md bg-clip-border post flex-shrink-0 text-white h-[190px] w-[300px] p-6 transition-all duration-1000"
-                :class="postIndex == 7 ? 'opacity-100 ring ring-white ring-offset-2 ring-offset-transparent' : 'opacity-50 backdrop-blur-xl' "
-                style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url(https://images3.alphacoders.com/135/135625.jpg);">
+        
+            <button
+                    @click="if(presentationPaused && postIndex == 7) resume(); else pause(7);">
                 
-                <h2 class="text-xl md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
-                    Coming from the sky
-                </h2>
-            </li>
-        </a>
+                <li class="flex flex-col justify-end rounded-md bg-clip-border post flex-shrink-0 text-white h-[190px] w-[300px] p-6 transition-all duration-1000"
+                    :class="postIndex == 7 ? 'opacity-100 ring ring-offset-2 ring-offset-transparent ' + (presentationPaused ? 'ring-red-400' : 'ring-white') : 'opacity-50 backdrop-blur-xl hover:ring hover:ring-sky-300' "
+                    style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url(https://images3.alphacoders.com/135/135625.jpg);">
+                    
+                    <h2 class="text-xl md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
+                        Coming from the sky
+                    </h2>
+                </li>
+                
+        </button>
+        
         <template x-teleport="main">
             <section x-data="{image: 'https://images3.alphacoders.com/135/135625.jpg', alternateStyle: (alternative) => {return `background-image: linear-gradient(30.8deg, rgba(0, 0, 0, 1) 30%, ${alternative} 100%),radial-gradient(circle at 70% 40%, transparent, rgba(0, 0, 0, 1) 90%),url(https://images3.alphacoders.com/135/135625.jpg);`}}"
                      x-show="postIndex == 7" x-transition.duration.2000ms
@@ -672,9 +696,8 @@ to North America by European colonists.</p>
                             <p>I find myself pondering, lost in a curious maze of thoughts. Are there otherworldly beings high above, gazing down upon our earthly realm with their own brand of wonder and confusion?</p>
 
                         </div>
-                        <button x-show="!contentRevealed" @mouseover="presentationPaused = true;"
-                                @mouseleave="if(!contentRevealed) presentationPaused = false;"
-                                @click="presentationPaused = true; contentRevealed = true"
+                        <button x-show="!contentRevealed" @mouseover="pause(7);"
+                                @mouseleave="if(!contentRevealed) resume()" @click="pause(7, true);"
                                 class="hidden xl:block text-white underline underline-offset-4 font-medium text-xl text-left">
                             Tell me more please...
                         </button>
@@ -699,7 +722,7 @@ to North America by European colonists.</p>
 
     
 </article>
-                    <button @click="presentationPaused = false; contentRevealed = false"
+                    <button @click="resume()"
                             class="text-white mt-4 underline underline-offset-4 font-medium text-xl text-left">
                         Let's talk about something else...
                     </button>
@@ -708,6 +731,7 @@ to North America by European colonists.</p>
         </template>
         
     </ul>
+
 </main>
 </section>
 <nav
