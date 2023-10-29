@@ -5,62 +5,85 @@
     postIndex:1, 
     totalPosts: {{site.categories[target_category].size}}, 
     presentationPaused: false, 
-    contentRevealed: false}
-    " x-init="
-        slideNext = () => {
-            setTimeout(() => {
-                if(postIndex < totalPosts){
-                    if(!presentationPaused){ 
-                        !presentationPaused &&
-                        document.querySelector('#posts').scrollTo((300 + 12) * postIndex, 0); postIndex++; 
-                    } 
-                } 
-            }, 3000);
-        };
-        refresheSlider = (at = 1) => {
-            if(!contentRevealed && !presentationPaused){
-                document.querySelector('#posts').scrollTo(0, 0); postIndex = at;
-            }
-        };
-        $watch('postIndex', value => {
-            if(value == totalPosts){
-                setTimeout(() => {
-                    refresheSlider();
-                }, 3000);
-            }else{
-                slideNext();
-            }
-        });
-        $watch('presentationPaused', (value, oldValue) => {
-            if(postIndex == totalPosts && !value){
-                setTimeout(() => {
-                    refresheSlider();
-                }, 3000);
-            }else if(oldValue){
-                slideNext();
-            }
-        });
+    contentRevealed: false,
+    pause: null,
+    resume: null,
+    }
     " class="relative flex flex-col justify-end text-white h-screen w-screen overflow-hidden">
-    <ul id="posts"
+
+    <ul x-data="{
+            pause: (at = null, revealContent = false) => {
+                presentationPaused = true;
+                postIndex = at || postIndex;
+                contentRevealed = revealContent;
+            },
+            resume: () => {
+                presentationPaused = false;
+                contentRevealed = false
+            },
+            slideNext: () => {
+                setTimeout(() => {
+                    if(postIndex < totalPosts){
+                        if(!presentationPaused){ 
+                            !presentationPaused &&
+                            document.querySelector('#posts').scrollTo((300 + 12) * postIndex, 0); postIndex++; 
+                        } 
+                    } 
+                }, 3000);
+            },
+            refresheSlider: (at = 1) => {
+                if(!contentRevealed && !presentationPaused){
+                    document.querySelector('#posts').scrollTo(0, 0); postIndex = at;
+                }
+            },
+        }
+        " x-init="
+            slideNext();
+            $watch('postIndex', value => {
+                if(value == totalPosts){
+                    setTimeout(() => {
+                        refresheSlider();
+                    }, 3000);
+                }else{
+                    slideNext();
+                }
+            });
+            $watch('presentationPaused', (value, oldValue) => {
+                if(postIndex == totalPosts && !value){
+                    setTimeout(() => {
+                        refresheSlider();
+                    }, 3000);
+                }else if(oldValue){
+                    slideNext();
+                }
+            });
+        " id="posts"
         class="lg:border-t-2 lg:border-slate-200/30 w-full gap-3 z-20 py-20 lg:py-10 flex flex-nowrap items-center overflow-x-auto pl-6 md:pl-20 pr-[15vw] md:pr-[75vw]">
         {% for post in site.categories[target_category] %}
-        <a href="{% if page.url == post.url %} #post {% else %} {{site.baseurl}}{{ post.url }} {% endif %}"
-           @focus="presentationPaused = true; postIndex = {{forloop.index  }};">
-            <li @mouseover="presentationPaused = true; postIndex = {{forloop.index  }}; contentRevealed = false"
-                @focusout="presentationPaused = false;" @mouseleave="presentationPaused = false;"
-                class="flex flex-col justify-end rounded-md bg-clip-border post flex-shrink-0 text-white h-[190px] w-[300px] p-6 transition-all duration-1000"
-                :class="postIndex == {{forloop.index }} ? 'opacity-100 ring ring-white ring-offset-2 ring-offset-transparent' : 'opacity-50 backdrop-blur-xl' "
-                style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url({{post.image}});">
-                {% if page.url == post.url %}
-                <span class="rounded-full px-2 text-sm mb-2 bg-yellow-500 text-black font-mono inline-block self-start">
-                    Reading
-                </span>
+        {% if page.url == post.url %}
+        <a href="#post">
+            {% else %}
+            <button
+                    @click="if(presentationPaused && postIndex == {{forloop.index}}) resume(); else pause({{forloop.index}});">
                 {% endif %}
-                <h2 class="text-xl md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
-                    {{ post.title }}
-                </h2>
-            </li>
+                <li class="flex flex-col justify-end rounded-md bg-clip-border post flex-shrink-0 text-white h-[190px] w-[300px] p-6 transition-all duration-1000"
+                    :class="postIndex == {{forloop.index }} ? 'opacity-100 ring ring-offset-2 ring-offset-transparent ' + (presentationPaused ? 'ring-red-400' : 'ring-white') : 'opacity-50 backdrop-blur-xl hover:ring hover:ring-sky-300' "
+                    style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url({{post.image}});">
+                    {% if page.url == post.url %}
+                    <span
+                          class="rounded-full px-2 text-sm mb-2 bg-yellow-500 text-black font-mono inline-block self-start">
+                        Reading
+                    </span>
+                    {% endif %}
+                    <h2 class="text-xl md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
+                        {{ post.title }}
+                    </h2>
+                </li>
+                {% if page.url == post.url %}
         </a>
+        {% else %}
+        </button>
+        {% endif %}
         <template x-teleport="main">
             <section x-data="{image: '{{post.image}}', alternateStyle: (alternative) => {return `background-image: linear-gradient(30.8deg, rgba(0, 0, 0, 1) 30%, ${alternative} 100%),radial-gradient(circle at 70% 40%, transparent, rgba(0, 0, 0, 1) 90%),url({{post.image}});`}}"
                      x-show="postIndex == {{ forloop.index  }}" x-transition.duration.2000ms
@@ -78,9 +101,8 @@
                              class="text-xl text-white grow-0 max-h-[68%] overflow-hidden">
                             {{post.excerpt}}
                         </div>
-                        <button x-show="!contentRevealed" @mouseover="presentationPaused = true;"
-                                @mouseleave="if(!contentRevealed) presentationPaused = false;"
-                                @click="presentationPaused = true; contentRevealed = true"
+                        <button x-show="!contentRevealed" @mouseover="pause({{forloop.index}});"
+                                @mouseleave="if(!contentRevealed) resume()" @click="pause({{forloop.index}}, true);"
                                 class="hidden xl:block text-white underline underline-offset-4 font-medium text-xl text-left">
                             Tell me more please...
                         </button>
@@ -93,7 +115,7 @@
                 <div x-show="contentRevealed" x-transition x-transition:leave="duration-0"
                      class="hidden lg:block border-l z-10 h-[49%] lg:h-[57%] grow px-6 overflow-hidden overflow-y-auto">
                     {% include prose-md.html %}
-                    <button @click="presentationPaused = false; contentRevealed = false"
+                    <button @click="resume()"
                             class="text-white mt-4 underline underline-offset-4 font-medium text-xl text-left">
                         Let's talk about something else...
                     </button>
@@ -102,4 +124,5 @@
         </template>
         {% endfor %}
     </ul>
+
 </main>
