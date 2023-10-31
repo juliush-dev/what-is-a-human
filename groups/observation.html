@@ -84,8 +84,8 @@
                     :class="postIndex == 1 ? 'opacity-100 ring ring-offset-2 ring-offset-transparent ' + (presentationPaused ? 'ring-red-400' : 'ring-white') : 'opacity-50 backdrop-blur-xl hover:ring hover:ring-sky-300' "
                     style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.9)), url(https://images.unsplash.com/photo-1659177147979-103a1fb2f336?auto=format&fit=crop&q=80&w=1931&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D);">
                     
-                    <h2 class="text-xl md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
-                        How to learn what I want
+                    <h2 class="text-xl text-left md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
+                        How to learn what I want?
                     </h2>
                 </li>
                 
@@ -105,7 +105,7 @@
                     <div class="meta mb-4 md:mb-6 ">
     <h1
         class="text-4xl mb-4  md:text-7xl mb-2 ">
-        How to learn what I want
+        How to learn what I want?
     </h1>
     
     <p class="mb-4 md:mb-0 capitalize md:text-md bg-yellow-500 text-slate-950 rounded-full px-4 inline-block">
@@ -121,6 +121,7 @@
                             <p>The neural networks the body executes to solve a mathematical problem it is exposed to are not the same as those it executes in order to recall a fact to answer a question or to argue an idea.</p>
 
                         </div>
+                        
                         <button x-show="!contentRevealed" @mouseover="pause(1);"
                                 @mouseleave="if(!contentRevealed) resume()" @click="pause(1, true);"
                                 class="hidden xl:block text-white underline underline-offset-4 font-medium text-xl text-left">
@@ -130,6 +131,7 @@
                            class="xl:hidden text-white underline underline-offset-4 font-medium text-xl text-left">
                             Tell me more please...
                         </a>
+                        
                     </div>
                 </div>
                 <div x-show="contentRevealed" x-transition x-transition:leave="duration-0"
@@ -184,7 +186,7 @@
       <p>The will of the body <a href="#fnref:4" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
     <li id="fn:5" role="doc-endnote">
-      <p>This is for example the case when I answer a question with 100% certitude that it is the correct answer and that it is well formulated. Otherwise I am either not so sure of my answer or of the way I formulated it. This is a sign of malformed, blured or incomplete neuronal networks. <a href="#fnref:5" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
+      <p>This is for example the case when I answer a question with 100% certitude that it is the correct answer and that it is well formulated. Otherwise I am either not so sure of my answer or of the way I formulated it. This is a sign of malformed, blured or incomplete neural networks. <a href="#fnref:5" class="reversefootnote" role="doc-backlink">&#8617;</a></p>
     </li>
   </ol>
 </div>
@@ -228,8 +230,15 @@
         
         <li class="flex flex-nowrap items-center">
             <a href="/what-is-a-human/groups/observation.html"
-               class=" mr-6 md:mr-0    rounded-full bg-white text-slate-950 font-semibold px-2 ">
+               class="  rounded-full bg-white text-slate-950 font-semibold px-2 ">
                 Observation
+            </a>
+        </li>
+        
+        <li class="flex flex-nowrap items-center">
+            <a href="/what-is-a-human/groups/z-coming-soon.html"
+               class=" mr-6 md:mr-0   ">
+                Coming-soon
             </a>
         </li>
         
