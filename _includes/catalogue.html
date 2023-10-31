@@ -75,7 +75,7 @@
                         Reading
                     </span>
                     {% endif %}
-                    <h2 class="text-xl md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
+                    <h2 class="text-xl text-left md:text-2xl text-slate-50 font-normal meta w-full whitespace-normal">
                         {{ post.title }}
                     </h2>
                 </li>
@@ -101,6 +101,7 @@
                              class="text-xl text-white grow-0 max-h-[68%] line-clamp-3">
                             {{post.excerpt}}
                         </div>
+                        {% if post and post.categories.last != "Coming-soon" %}
                         <button x-show="!contentRevealed" @mouseover="pause({{forloop.index}});"
                                 @mouseleave="if(!contentRevealed) resume()" @click="pause({{forloop.index}}, true);"
                                 class="hidden xl:block text-white underline underline-offset-4 font-medium text-xl text-left">
@@ -110,6 +111,7 @@
                            class="xl:hidden text-white underline underline-offset-4 font-medium text-xl text-left">
                             Tell me more please...
                         </a>
+                        {% endif %}
                     </div>
                 </div>
                 <div x-show="contentRevealed" x-transition x-transition:leave="duration-0"
