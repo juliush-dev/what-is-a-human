@@ -98,7 +98,7 @@
                     {% include post-header.html %}
                     <div class="flex flex-col gap-3 justify-start overflow-hidden grow">
                         <div x-show="!contentRevealed" x-transition
-                             class="text-xl text-white grow-0 max-h-[68%] overflow-hidden">
+                             class="text-xl text-white grow-0 max-h-[68%] line-clamp-3">
                             {{post.excerpt}}
                         </div>
                         <button x-show="!contentRevealed" @mouseover="pause({{forloop.index}});"

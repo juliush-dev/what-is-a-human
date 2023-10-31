@@ -1,7 +1,7 @@
 <article
          class="py-6 {% if post == nil and project == nil %} px-6 {% endif %} md:p-0 {% if  page.categories != nil  %}  bg-gradient-to-r from-black md:from-black/5 to-slate-900/5 {% endif %} prose text-lg  text-slate-200 prose-headings:text-white pb-20 prose-p:text-xl prose-p:leading-10 prose-strong:text-white prose-strong:font-medium prose-th:text-white prose-a:text-yellow-500">
     {% if post %}
-    {{post.content}}
+    {{post.content | markdownify }}
     {% elsif project %}
     {{project.content}}
     {% else %}
