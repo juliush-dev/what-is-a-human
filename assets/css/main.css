@@ -860,6 +860,17 @@ img, video {
   margin-top: 1rem;
 }
 
+.line-clamp-3 {
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  display: -webkit-box;
+  overflow: hidden;
+}
+
+.block {
+  display: block;
+}
+
 .inline-block {
   display: inline-block;
 }
@@ -1390,11 +1401,8 @@ body {
   .md\:mb-0 {
     margin-bottom: 0;
   }
-  .md\:mb-2 {
-    margin-bottom: 0.5rem;
-  }
-  .md\:mb-4 {
-    margin-bottom: 1rem;
+  .md\:mb-6 {
+    margin-bottom: 1.5rem;
   }
   .md\:ml-0 {
     margin-left: 0;
