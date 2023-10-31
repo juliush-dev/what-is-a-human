@@ -1,7 +1,6 @@
 <nav
      class="flex items-center z-20 text-white gap-2 py-6 md:px-20 fixed top-0 w-screen backdrop-blur-sm justify-end meta overflow-hidden">
-    <ul
-        class="pl-56 md:pl-0 flex gap-6 text-md md:text-base w-screen justify-evenly md:justify-end overflow-y-hidden overflow-x-auto">
+    <ul class="pr-4 flex gap-6 text-md md:text-base w-screen  md:justify-end overflow-y-hidden overflow-x-auto">
         {% for item in site.data.navigation %}
         <li class="{% if forloop.first %} ml-6 md:ml-0  {% endif %}">
             <a href="{{site.baseurl}}{{ item.url }}"
@@ -17,7 +16,7 @@
         {% for group in site.groups %}
         <li class="flex flex-nowrap items-center">
             <a href="{{site.baseurl}}{{ group.url }}"
-               class="{% if forloop.last %} mr-6 md:mr-0  {% endif %} {% if page.url==group.url %} rounded-full bg-white text-slate-950 font-semibold px-2 {% endif %}">
+               class="{% if forloop.last %} md:mr-0  {% endif %} {% if page.url==group.url %} rounded-full bg-white text-slate-950 font-semibold px-2 {% endif %}">
                 {{ group.cat | capitalize }}
             </a>
         </li>
